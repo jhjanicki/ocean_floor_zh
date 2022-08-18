@@ -14,11 +14,22 @@
     rel="stylesheet">
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
   <style>
+    @font-face {
+      font-family: 'Noto Sans CJK';
+      src: url("./fonts/Noto\ Sans\ CJK\ Regular.otf") format("opentype");
+    }
+
+    @font-face {
+      font-family: 'Noto Sans CJK';
+      font-weight: bold;
+      src: url("./fonts/Noto\ Sans\ CJK\ Bold.otf") format("opentype");
+    }
+
     body {
       margin: 0;
       padding: 0;
       color: #0C1B34;
-      font-family: 'Work Sans', sans-serif;
+      font-family: 'Noto Sans CJK';
     }
 
     #map {
@@ -161,7 +172,7 @@
     }
 
     #title {
-      font-family: 'Eczar', serif;
+      font-family: 'Noto Sans CJK';
       color: #0c1b34;
       font-weight: 700;
       margin-left: -10px;
