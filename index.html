@@ -1,0 +1,908 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <title>主要海底地貌</title>
+  <meta name="description" content="Ocean floor">
+  <meta name="author" content="Julia Janicki">
+  <link rel="shortcut icon" href="#">
+  <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;600;700&family=Work+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet">
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      color: #0C1B34;
+      font-family: 'Work Sans', sans-serif;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      background-color: #0C1B34;
+    }
+
+    h1 {
+      font-size: 17px;
+      line-height: 25px;
+    }
+
+    h2 {
+      font-size: 15px;
+      line-height: 20px;
+      margin-bottom: 10px;
+    }
+
+    a {
+      text-decoration: none;
+      color: #2dc4b2;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    #console {
+      position: absolute;
+      width: 300px;
+      margin: 10px;
+      padding: 10px 20px 10px 30px;
+      background-color: #F0F0F1;
+      border-radius: 5px;
+      z-index: 15;
+      transition: 0.3s ease-in-out;
+      box-shadow: 0 1px 1px 0 rgba(66, 66, 66, 0.08), 0 1px 3px 1px rgba(66, 66, 66, 0.16);
+    }
+
+    .active {
+      transform: translate3d(-280px, 0, 0);
+      transition: 0.3s ease-in-out;
+    }
+
+    .itemWrapper {
+      margin-top: -20px;
+    }
+
+    #toggleConsole {
+      position: absolute;
+      right: 5px;
+      top: 0px;
+    }
+
+    #toggleConsole img {
+      width: 16px;
+      opacity: 0.7;
+    }
+
+    #toggleConsole img:hover {
+      opacity: 0.5;
+      transition: all .5s ease;
+      cursor: pointer;
+    }
+
+    .toggle {
+      position: relative;
+      height: 14px;
+      width: 35px;
+      border-radius: 15px;
+      background: #cfcfcf;
+      margin: 8px 0;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 100%;
+      height: 200%;
+      position: absolute;
+      top: -7px;
+      left: 0;
+      z-index: 2;
+      margin: 0
+    }
+
+    .toggle input:nth-child(2):checked {
+      z-index: 1;
+    }
+
+    .toggle__pointer {
+      position: absolute;
+      top: -3.5px;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 15px;
+      -webkit-transition: left .15s ease-out;
+      transition: left .15s ease-out;
+    }
+
+    .toggle input:nth-child(2):checked+.toggle__pointer {
+      left: 18px;
+      background-color: #777777;
+    }
+
+    .toggleSeamount {
+      background-color: #189B68;
+    }
+
+    .toggleRidges {
+      background-color: #6547a4;
+    }
+
+    .toggleTrenches {
+      background-color: #E7685A;
+    }
+
+    .toggleCanyons {
+      background-color: #FFC554;
+    }
+
+    .flip {
+      -webkit-transform: scaleX(-1);
+      transform: scaleX(-1);
+      opacity: 1;
+    }
+
+    #console h1,
+    #console h2 {
+      text-align: left;
+    }
+
+    .verticalLine {
+      margin-right: 5px;
+      border-right: 0.3px solid #ECE8E1;
+    }
+
+    #title {
+      font-family: 'Eczar', serif;
+      color: #0c1b34;
+      font-weight: 700;
+      margin-left: -10px;
+      margin-bottom: 35px;
+    }
+
+    #title a {
+      color: #0c1b34;
+    }
+
+    #title a:hover {
+      color: #D66951;
+      transition: all 1s ease;
+      text-decoration: underline !important;
+    }
+
+    .mapboxgl-popup {
+      max-width: 300px !important;
+      font-family: 'Work Sans', sans-serif;
+      text-align: left;
+      z-index: 20;
+    }
+
+    .mapboxgl-popup-content {
+      font-family: 'Work Sans', sans-serif;
+      padding: 0;
+    }
+
+    .mapboxgl-popup-content-wrapper {
+      padding: 1%;
+    }
+
+    .mapboxgl-popup-content h3 {
+      text-align: left;
+      font-size: 16px;
+      margin: 0;
+      display: block;
+      padding: 15px;
+      font-weight: 700;
+      margin-top: -5px;
+    }
+
+    .mapboxgl-popup.seamount h3 {
+      background: #189B68 !important;
+      color: #fff;
+    }
+
+    .mapboxgl-popup.ridge h3 {
+      background: #6547a4 !important;
+      color: #fff;
+    }
+
+    .mapboxgl-popup.trench h3 {
+      background: #E7685A !important;
+      color: #fff;
+    }
+
+    .mapboxgl-popup.canyon h3 {
+      background: #FFC554 !important;
+      color: #fff;
+    }
+
+    .mapboxgl-popup-content h4 {
+      margin: 0;
+      display: block;
+      font-size: 14px;
+      padding: 10px;
+      font-weight: 400;
+    }
+
+    .mapboxgl-container {
+      cursor: pointer;
+    }
+
+    .mapboxgl-popup-anchor-top>.mapboxgl-popup-content {
+      margin-top: 3px;
+    }
+
+    .mapboxgl-popup-anchor-top>.mapboxgl-popup-tip {
+      border-bottom-color: rgb(61, 59, 59);
+    }
+
+    .mapboxgl-popup-close-button {
+      transform: scale(2);
+      color: white;
+      padding: 0px;
+      margin-right: 10px;
+    }
+
+    .mapboxgl-popup-close-button:hover,
+    .mapboxgl-popup-close-button:active,
+    .mapboxgl-popup-close-button:target {
+      background: none !important;
+      border: none !important;
+      outline: none !important;
+      color: #cfcfcf;
+      transition: all 0.5s ease;
+    }
+
+    .instruction {
+      margin-left: -15px;
+      margin-top: 20px;
+    }
+
+    .instruction p {
+      color: #4159A8;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .button {
+      margin-bottom: 10px;
+      margin-top: 10px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      font-weight: 700;
+      font-size: 12px;
+      line-height: 1.5;
+      text-transform: uppercase;
+      background-color: none;
+      max-width: 200px;
+      text-align: center;
+      -webkit-transition: all .5s ease;
+      -moz-transition: all .5s ease;
+      -ms-transition: all .5s ease;
+      transition: all .5s ease;
+      padding: 10px;
+    }
+
+
+    .button:hover {
+      cursor: pointer;
+      -webkit-transition: all .5s ease;
+      -moz-transition: all .5s ease;
+      -ms-transition: all .5s ease;
+      transition: all .5s ease;
+    }
+
+    a:hover {
+      text-decoration: none !important;
+    }
+
+    .item {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+
+    #loading {
+      top: 0;
+      left: 0;
+      position: fixed;
+      display: block;
+      opacity: .7;
+      background-color: #fff;
+      z-index: 99;
+    }
+
+    #loading-image {
+      position: relative;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: calc(50vh - 80px);
+      z-index: 100;
+    }
+
+    #loading {
+      width: 100%;
+      text-align: center;
+      height: 100%;
+    }
+
+    #logo {
+      position: absolute;
+      bottom: 22px;
+      right: 0px;
+      z-index: 5;
+    }
+
+    #logo img {
+      width: 120px;
+    }
+
+    @media screen and (max-width: 800px) {
+
+      #console {
+        width: 250px;
+      }
+
+      .active {
+        transform: translate3d(-230px, 0, 0);
+      }
+
+      h1 {
+        font-size: 16px;
+      }
+
+      h2 {
+        font-size: 12px;
+      }
+
+      #console {
+        padding: 10px 20px;
+      }
+
+      #title {
+        margin-top: -10px;
+      }
+
+      .mapboxgl-popup {
+        max-width: 290px !important;
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      body {
+        font-size: 11px !important;
+      }
+
+      #title {
+        font-size: 13px;
+      }
+
+      .subtitle {
+        font-size: 12px;
+      }
+
+      .active {
+        transform: translate3d(-230px, 0, 0);
+      }
+
+      h1 {
+        font-size: 14px;
+      }
+
+      h2 {
+        font-size: 12px;
+      }
+
+      .instruction p {
+        font-size: 10px;
+      }
+
+      .mapboxgl-popup {
+        transform: none !important;
+        top: 230px;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+      .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+      .mapboxgl-popup-anchor-center .mapboxgl-popup-tip,
+      .mapboxgl-popup-anchor-left .mapboxgl-popup-tip,
+      .mapboxgl-popup-anchor-right .mapboxgl-popup-tip,
+      .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip,
+      .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+      .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip,
+      .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {
+        display: none !important;
+      }
+
+      #logo {
+        position: absolute;
+        bottom: 15px;
+        right: 0px;
+      }
+
+      #logo img {
+        width: 100px;
+      }
+
+      .mapboxgl-popup-content h4 {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id='map'></div>
+  <div id='console'>
+    <div class="verticalLine">
+      <span id="toggleConsole">
+        <img src="./img/toggle.png" />
+      </span>
+      <h1 id='title'>主要海底地貌</h1>
+      <div class='itemWrapper'>
+        <h2 class="subtitle"> 地貌类型</h2>
+      </div>
+      <div class="itemWrapper">
+        <div class='row toggle item filters' id="seamountFilter">
+          <input id='' type="radio" value="seamountOn" name="toggle" checked='checked'>
+          <input id='' type="radio" value="seamountOff" name="toggle">
+          <div class="toggle__pointer toggleSeamount"></div>
+        </div>
+        <div class="item">
+          <h2>海底山</h2>
+        </div>
+      </div>
+      <div class="itemWrapper">
+        <div class='row toggle item filters' id="ridgesFilter">
+          <input id='' type="radio" value="ridgesOn" name="toggleRidges" checked='checked'>
+          <input id='' type="radio" value="ridgesOff" name="toggleRidges">
+          <div class="toggle__pointer toggleRidges"></div>
+        </div>
+        <div class="item">
+          <h2>海脊</h2>
+        </div>
+      </div>
+      <div class="itemWrapper">
+        <div class='row toggle item filters' id="trenchesFilter">
+          <input id='' type="radio" value="trenchesOn" name="toggleTrenches" checked='checked'>
+          <input id='' type="radio" value="trenchesOff" name="toggleTrenches">
+          <div class="toggle__pointer toggleTrenches"></div>
+        </div>
+        <div class="item">
+          <h2>海沟</h2>
+        </div>
+      </div>
+      <div class="itemWrapper">
+        <div class='row toggle item filters' id="canyonsFilter">
+          <input id='' type="radio" value="canyonsOn" name="toggleCanyons" checked='checked'>
+          <input id='' type="radio" value="canyonsOff" name="toggleCanyons">
+          <div class="toggle__pointer toggleCanyons"></div>
+        </div>
+        <div class="item">
+          <h2>峡谷</h2>
+        </div>
+      </div>
+
+      <div class="instruction itemWrapper" id="instruction">
+        <p class="item">点击地图上的圆点和线条了解详情</p>
+      </div>
+    </div>
+    <!-- end line -->
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.14.2/d3.js"></script>
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+  <script src="data2/seamounts_points.js"></script>
+  <script src="data2/ridges_points.js"></script>
+  <script src="data2/ridges_lines.js"></script>
+  <script src="data2/seamounts_lines.js"></script>
+  <script src="data2/trenches_lines.js"></script>
+  <script src="data2/canyons_lines.js"></script>
+
+  <!-- <script src="data/ridges_lines.js"></script>
+  <script src="data/trenches.js"></script>
+  <script src="data/canyons_lines.js"></script> -->
+  <!-- <script src="data/canyons_points.js"></script> -->
+  <script>
+
+    var windowWidth = $(window).width();
+    var windowHeight = $(window).height();
+    var viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    var viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+    var mobile = false;
+    var iphone = false;
+    var safari = false;
+
+    let popup;
+    let legendShow = false;
+    let map;
+    const featureSize = 7;
+    const featureSizeMobile = 9;
+
+    $(window).resize(function () {
+      if (windowWidth != $(window).width() || windowHeight != $(window).height()) {
+        location.reload();
+        return;
+      }
+    });
+
+    if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || viewportWidth < 600) {
+      mobile = true;
+    }
+
+    if (/iPhone/i.test(navigator.userAgent)) {
+      iphone = true;
+    }
+
+    //if Safari
+    const ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) { // Chrome
+      } else {// Safari
+        safari = true;
+      }
+    }
+
+    if (viewportWidth < 700) {
+      $("#instruction").css("display", "none");
+    } else {
+      $("#instruction").css("display", "inherit");
+    }
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoidGhldGhpcmRwb2xlIiwiYSI6ImNLSWVDcWsifQ.vVx5f1hjIvHBeSpaY3NUkQ';
+
+    const seamountsPointsData = {
+      'type': 'FeatureCollection',
+      'features': [
+      ]
+    };
+
+    const seamountsLinesData = {
+      'type': 'FeatureCollection',
+      'features': [
+      ]
+    };
+
+    const ridgesPointsData = {
+      'type': 'FeatureCollection',
+      'features': [
+      ]
+    };
+
+    const ridgesLinesData = {
+      'type': 'FeatureCollection',
+      'features': [
+      ]
+    };
+
+
+    const trenchesLinesData = {
+      'type': 'FeatureCollection',
+      'features': [
+      ]
+    };
+
+    const canyonsLinesData = {
+      'type': 'FeatureCollection',
+      'features': [
+      ]
+    };
+
+
+
+    if (mobile) {
+
+      map = new mapboxgl.Map({
+        container: 'map', // container element id
+        style: 'mapbox://styles/jhjanicki/cl3xt7dgs000415mylif9a5g7',
+        center: [169.405272, 3.257067], // initial map center in [lon, lat]
+        zoom: 2,
+        minZoom: 1,
+        projection: 'globe'
+      });
+
+    } else {
+
+      map = new mapboxgl.Map({
+        container: 'map', // container element id
+        style: 'mapbox://styles/jhjanicki/cl3xt7dgs000415mylif9a5g7',
+        center: [-78.551954, 4.326720], // initial map center in [lon, lat]
+        zoom: 2,
+        minZoom: 1,
+        projection: 'globe'
+      });
+
+    }
+
+    let consoleHeight = $("#console").height() / 2;
+    $("#toggleConsole").css("top", consoleHeight);
+
+    map.on('load', function () {
+      init();
+      $("#toggleConsole").click(function () {
+        $("#console").toggleClass("active");
+        $("#toggleConsole img").toggleClass("flip");
+      });
+    });
+
+    if (!mobile) {
+      map.addControl(new mapboxgl.NavigationControl());
+    }
+
+
+    function addPointData(originalData, newData, height, depth, biodiversity) {
+      originalData.forEach(function (row) {
+        const feature =
+        {
+          'type': 'Feature',
+          'properties': {
+            'longitude': +row.longitude,
+            'latitude': +row.latitude,
+            'period_of_formation': row.Period_of_formation,
+            'name': row.Name,
+            'type': row.Type,
+            'length1': row.Length,
+            'height': height ? row.Height : '',
+            'depth': depth ? row.Depth : '',
+            'description': row.Description,
+            'biodiversity': biodiversity ? row.Biodiversity : ''
+          },
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [+row.longitude, +row.latitude],
+          }
+        };
+        newData['features'].push(feature);
+      });
+    }
+
+    function addLineData(originalData, newData, height, depth, biodiversity) {
+
+      originalData.forEach(function (row) {
+
+        const feature =
+        {
+          'type': 'Feature',
+          'properties': {
+            'name': row.Name,
+            'period_of_formation': row.Period_of_formation,
+            'length1': row.Length,
+            'height': height ? row.Height : '',
+            'depth': depth ? row.Depth : '',
+            'description': row.Description,
+            'biodiversity': biodiversity ? row.Biodiversity : ''
+          },
+          'geometry': {
+            'type': 'LineString',
+            'coordinates': row.Coordinates
+          }
+        };
+        newData['features'].push(feature);
+      });
+    }
+
+    function addPointLayer(id, data, color) {
+
+      map.addLayer({
+        id: id,
+        type: 'circle',
+        source: {
+          type: 'geojson',
+          data: data
+        },
+        paint: {
+          "circle-color": color,
+          'circle-radius': mobile ? featureSizeMobile : featureSize,
+          'circle-opacity': 1
+        }
+      });
+
+    }
+
+    function addLineLayer(id, data, color) {
+      map.addLayer({
+        id: id,
+        type: 'line',
+        source: {
+          type: 'geojson',
+          data: data
+        },
+        paint: {
+          "line-color": color,
+          'line-width': mobile ? featureSizeMobile : featureSize,
+          'line-opacity': 1
+        },
+        layout: {
+          'line-cap': 'round',
+          'line-join': 'round'
+        }
+      });
+    }
+
+    function init() {
+
+      $('#loading').hide();
+
+      addPointData(seamounts_points, seamountsPointsData, true, false, true); //originalData, newData, height, depth, biodiversity
+      addPointData(ridges_points, ridgesPointsData, true, true, false);
+
+      addLineData(trenches_lines, trenchesLinesData, false, true, true); // originalData, newData, height, depth, biodiversity
+      addLineData(seamounts_lines, seamountsLinesData, true, false, true); // originalData, newData, height, depth, biodiversity
+      addLineData(canyons_lines, canyonsLinesData, true, true, true); // originalData, newData, height, depth, biodiversity
+      addLineData(ridges_lines, ridgesLinesData, true, true, false);
+
+
+
+      addPointLayer('seamountsPointsLayer', seamountsPointsData, "#189B68");
+      addPointLayer('ridgesPointsLayer', ridgesPointsData, "#6547a4");
+
+
+
+      addLineLayer('trenchesLinesLayer', trenchesLinesData, "#E7685A");
+      addLineLayer('seamountsLinesLayer', seamountsLinesData, "#189B68");
+      addLineLayer('canyonsLinesLayer', canyonsLinesData, "#FFC554");
+      addLineLayer('ridgesLinesLayer', ridgesLinesData, "#6547a4");
+
+
+      document.getElementById('seamountFilter').addEventListener('change', function (e) {
+        if (popup) { popup.remove(); }
+        if (e.target.value === 'seamountOn') {
+          map.setPaintProperty('seamountsPointsLayer', 'circle-radius', mobile ? featureSizeMobile : featureSize);
+          map.setPaintProperty('seamountsPointsLayer', 'circle-opacity', 1);
+          map.setPaintProperty('seamountsLinesLayer', 'line-width', 1);
+          map.setPaintProperty('seamountsLinesLayer', 'line-width', mobile ? featureSizeMobile : featureSize);
+        } else {
+          map.setPaintProperty('seamountsPointsLayer', 'circle-radius', 0);
+          map.setPaintProperty('seamountsPointsLayer', 'circle-opacity', 0);
+          map.setPaintProperty('seamountsLinesLayer', 'line-width', 0);
+          map.setPaintProperty('seamountsLinesLayer', 'line-width', 0);
+        }
+      });
+
+      document.getElementById('trenchesFilter').addEventListener('change', function (e) {
+        if (popup) { popup.remove(); }
+        if (e.target.value === 'trenchesOn') {
+          map.setPaintProperty('trenchesLinesLayer', 'line-width', 1);
+          map.setPaintProperty('trenchesLinesLayer', 'line-width', mobile ? featureSizeMobile : featureSize);
+        } else {
+          map.setPaintProperty('trenchesLinesLayer', 'line-width', 0);
+          map.setPaintProperty('trenchesLinesLayer', 'line-width', 0);
+        }
+      });
+
+      document.getElementById('ridgesFilter').addEventListener('change', function (e) {
+        if (popup) { popup.remove(); }
+        if (e.target.value === 'ridgesOn') {
+          map.setPaintProperty('ridgesPointsLayer', 'circle-radius', mobile ? featureSizeMobile : featureSize);
+          map.setPaintProperty('ridgesPointsLayer', 'circle-opacity', 1);
+
+          map.setPaintProperty('ridgesLinesLayer', 'line-width', 1);
+          map.setPaintProperty('ridgesLinesLayer', 'line-width', mobile ? featureSizeMobile : featureSize);
+        } else {
+          map.setPaintProperty('ridgesPointsLayer', 'circle-radius', 0);
+          map.setPaintProperty('ridgesPointsLayer', 'circle-opacity', 0);
+
+          map.setPaintProperty('ridgesLinesLayer', 'line-width', 0);
+          map.setPaintProperty('ridgesLinesLayer', 'line-width', 0);
+        }
+      });
+
+      document.getElementById('canyonsFilter').addEventListener('change', function (e) {
+        if (popup) { popup.remove(); }
+        if (e.target.value === 'canyonsOn') {
+          map.setPaintProperty('canyonsLinesLayer', 'line-width', 1);
+          map.setPaintProperty('canyonsLinesLayer', 'line-width', mobile ? featureSizeMobile : featureSize);
+        } else {
+
+          map.setPaintProperty('canyonsLinesLayer', 'line-width', 0);
+          map.setPaintProperty('canyonsLinesLayer', 'line-width', 0);
+        }
+      });
+
+
+      function clickPointLayer(layer, className, heightBool, depthBool, biodiversityBool) {
+
+        map.on('click', layer, function (e) {
+          map.getCanvas().style.cursor = 'pointer';
+          var latitude = e.features[0].properties.latitude;
+          var longitude = e.features[0].properties.longitude;
+          var period_of_formation = e.features[0].properties.period_of_formation;
+          var name = e.features[0].properties.name;
+          var type = e.features[0].properties.type;
+          var length1 = e.features[0].properties.length1;
+          var height = heightBool ? e.features[0].properties.height : '';
+          var depth = depthBool ? e.features[0].properties.depth : '';
+          var biodiversity = biodiversityBool ? e.features[0].properties.biodiversity : '';
+          var description = e.features[0].properties.description;
+          let popupContent = '';
+
+          if (className === 'seamount') {
+            popupContent = `<h3 class="popupTitle">${name}</h3>
+            ${length1 !== 'not known' && length1 !== '' && length1 !== 'N/A' && length1 !== 'undefined' ? "<h4><b> 长度: </b>" + length1 + "</h4>" : ""}
+            ${height !== 'not known' && height !== '' && height !== 'N/A' && height !== 'undefined' ? "<h4><b> 高度: </b>" + height + "</h4>" : ""}
+            ${period_of_formation !== 'not known' && period_of_formation !== '' && period_of_formation !== 'N/A' && period_of_formation !== 'undefined' ? "<h4><b> 形成时期: </b>" + period_of_formation + "</h4>" : ""}
+            ${biodiversity !== 'not known' && biodiversity !== '' && biodiversity !== 'N/A' && biodiversity !== 'undefined' ? "<h4><b> 已发现的生物多样性: </b>" + biodiversity + "</h4>" : ""}
+            ${description !== 'not known' && description !== '' && description !== 'N/A' && description !== 'undefined' ? "<h4><b> 描述: </b>" + description + "</h4>" : ""}`
+          } else {
+            popupContent = `<h3 class="popupTitle">${name}</h3>
+            ${length1 !== 'not known' && length1 !== '' && length1 !== 'N/A' && length1 !== 'undefined' ? "<h4><b> 长度: </b>" + length1 + "</h4>" : ""}
+            ${height !== 'not known' && height !== '' && height !== 'N/A' && height !== 'undefined' ? "<h4><b> 高度: </b>" + height + "</h4>" : ""}
+            ${period_of_formation !== 'not known' && period_of_formation !== '' && period_of_formation !== 'N/A' && period_of_formation !== 'undefined' ? "<h4><b> 形成时期: </b>" + period_of_formation + "</h4>" : ""}
+            ${description !== 'not known' && description !== '' && description !== 'N/A' && description !== 'undefined' ? "<h4><b> 描述: </b>" + description + "</h4>" : ""}`
+          }
+
+          popup = new mapboxgl.Popup({ closeButton: true, closeOnClick: true, className: className })
+            .setHTML(popupContent)
+            .setLngLat([e.lngLat.lng, e.lngLat.lat])
+            .addTo(map);
+
+        });
+
+      }
+
+      clickPointLayer('seamountsPointsLayer', 'seamount', true, false, true);
+      // clickPointLayer('trenchLayer', 'trench', false, true, true);
+      clickPointLayer('ridgesPointsLayer', 'ridge', true, true, false); //layer, className, heightBool, depthBool, biodiversityBool
+
+
+      function clickLineLayer(layer, className, heightBool, depthBool, biodiversityBool, period) {
+        map.on('click', layer, function (e) {
+          map.getCanvas().style.cursor = 'pointer';
+          var period_of_formation = period ? e.features[0].properties.period_of_formation : "";
+          var name = e.features[0].properties.name;
+          var length = e.features[0].properties.length1;
+          var height = heightBool ? e.features[0].properties.height : "";
+          var depth = depthBool ? e.features[0].properties.depth : "";
+          var description = e.features[0].properties.description;
+          var biodiversity = biodiversityBool ? e.features[0].properties.biodiversity : "";
+
+          let popupContent = ''
+
+          popupContent = `<h3 class="popupTitle">${name}</h3>
+            ${length !== 'not known' && length !== '' && length !== 'N/A' && length !== 'undefined' ? "<h4><b> 长度: </b>" + length + "</h4>" : ""}
+            ${height !== 'not known' && height !== '' && height !== 'N/A' && height !== 'undefined' ? "<h4><b> 高度: </b>" + height + "</h4>" : ""}
+            ${depth !== 'not known' && depth !== '' && depth !== 'N/A' && depth !== 'undefined' ? "<h4><b> 深度: </b>" + depth + "</h4>" : ""}
+            ${period_of_formation !== 'not known' && period_of_formation !== '' && period_of_formation !== 'N/A' && period_of_formation !== 'undefined' ? "<h4><b> 形成时期: </b>" + period_of_formation + "</h4>" : ""}
+            ${biodiversity !== 'not known' && biodiversity !== '' && biodiversity !== 'N/A' && biodiversity !== 'undefined' ? "<h4><b> 已发现的生物多样性: </b>" + biodiversity + "</h4>" : ""}
+            ${description !== 'not known' && description !== '' && description !== 'N/A' && description !== 'undefined' ? "<h4><b> 描述: </b>" + description + "</h4>" : ""}`
+
+
+          popup = new mapboxgl.Popup({ closeButton: true, closeOnClick: true, className: className })
+            .setHTML(popupContent)
+            .setLngLat([e.lngLat.lng, e.lngLat.lat])
+            .addTo(map);
+        });
+
+      }
+
+      clickLineLayer('trenchesLinesLayer', 'trench', false, true, true, false)
+      clickLineLayer('seamountsLinesLayer', 'seamount', true, false, true, true); //layer, className, heightBool, depthBool, biodiversityBool
+
+
+      clickLineLayer('ridgesLinesLayer', 'ridge', true, true, false, true);
+      clickLineLayer('canyonsLinesLayer', 'canyon', true, true, true, true);
+
+    }
+
+  </script>
+</body>
+<div id="loading">
+  <img id="loading-image" src="./img/load.gif" alt="Loading..." />
+</div>
+
+</html>
