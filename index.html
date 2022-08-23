@@ -825,16 +825,16 @@
 
         map.on('click', layer, function (e) {
           map.getCanvas().style.cursor = 'pointer';
-          var latitude = e.features[0].properties.latitude;
-          var longitude = e.features[0].properties.longitude;
-          var period_of_formation = e.features[0].properties.period_of_formation;
-          var name = e.features[0].properties.name;
-          var type = e.features[0].properties.type;
-          var length1 = e.features[0].properties.length1;
-          var height = heightBool ? e.features[0].properties.height : '';
-          var depth = depthBool ? e.features[0].properties.depth : '';
-          var biodiversity = biodiversityBool ? e.features[0].properties.biodiversity : '';
-          var description = e.features[0].properties.description;
+          const latitude = e.features[0].properties.latitude;
+          const longitude = e.features[0].properties.longitude;
+          const period_of_formation = e.features[0].properties.period_of_formation;
+          const name = e.features[0].properties.name;
+          const type = e.features[0].properties.type;
+          const length1 = e.features[0].properties.length1;
+          const height = heightBool ? e.features[0].properties.height : '';
+          const depth = depthBool ? e.features[0].properties.depth : '';
+          const biodiversity = biodiversityBool ? e.features[0].properties.biodiversity : '';
+          const description = e.features[0].properties.description;
           let popupContent = '';
 
           if (className === 'seamount') {
@@ -869,13 +869,13 @@
       function clickLineLayer(layer, className, heightBool, depthBool, biodiversityBool, period) {
         map.on('click', layer, function (e) {
           map.getCanvas().style.cursor = 'pointer';
-          var period_of_formation = period ? e.features[0].properties.period_of_formation : "";
-          var name = e.features[0].properties.name;
-          var length = e.features[0].properties.length1;
-          var height = heightBool ? e.features[0].properties.height : "";
-          var depth = depthBool ? e.features[0].properties.depth : "";
-          var description = e.features[0].properties.description;
-          var biodiversity = biodiversityBool ? e.features[0].properties.biodiversity : "";
+          const period_of_formation = period ? e.features[0].properties.period_of_formation : "";
+          const name = e.features[0].properties.name;
+          const length = e.features[0].properties.length1;
+          const height = heightBool ? e.features[0].properties.height : "";
+          const depth = depthBool ? e.features[0].properties.depth : "";
+          const description = e.features[0].properties.description;
+          const biodiversity = biodiversityBool ? e.features[0].properties.biodiversity : "";
 
           let popupContent = ''
 

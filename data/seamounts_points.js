@@ -8,7 +8,7 @@ const seamounts_points = [
 	   "Period_of_formation":"至少100万年前",
 	   "Height":"9966米（4205米在海平面以上）",
 	   "Length":"N/A",
-	   "Description":"它是组成夏威夷群岛的六座火山之一。如果从水下的山脚开始测算，这座火山的高度比珠穆朗玛峰还高1116米。这座火山目前处于休眠状态，上一次喷发还是在4600年前。",
+	   "Description":"它是组成夏威夷群岛的六座火山之一。如果从水下的山脚开始测算，这座火山的高度比珠穆朗玛峰还高1116米。它目前处于休眠状态，上一次喷发还是在4600年前。",
 	   "Biodiversity":"这一地区可见各类海洋动物，从座头鲸（humpback whale）和夏威夷粉鲷（Hawaiian pink snapper）到海参和深海鳕鳗（Abyssal cusk eel）。"
 	},
 	{

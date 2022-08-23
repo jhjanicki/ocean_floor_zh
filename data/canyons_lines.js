@@ -302,7 +302,7 @@ const canyons_lines = [
 	   "Height":"峡壁高达1400米",
 	   "Depth":"N/A",
 	   "Length":"400公里",
-	   "Description":"它是白令海中四个最大的峽谷之一，其他三个是普里比洛夫峡谷、哲姆丘格峡谷和纳瓦林峡谷。它的体积為4300立方公里，比哲姆丘格峡谷小25%。它的东端是阿留申群岛。",
+	   "Description":"它是白令海中四个最大的峡谷之一，其他三个是普里比洛夫峡谷、哲姆丘格峡谷和纳瓦林峡谷。它的体积为4300立方公里，比哲姆丘格峡谷小25%。它的东端是阿留申群岛。",
 	   "Biodiversity":"这里生活着阿拉斯加鳕鱼、三文鱼、帝王蟹等珍贵的水产。信天翁、三趾鸥等海鸟以及虎鲸、海象和海獭等海洋哺乳动物也生活在这一地区。",
 	   "Changes_made":"Period of formation edited; Height edited; Depth edited; Description edited"
 	},
@@ -331,7 +331,7 @@ const canyons_lines = [
 	   "Height":"峡壁高达1100米",
 	   "Depth":"N/A",
 	   "Length":"280公里",
-	   "Description":"它是世界上最大的峡谷之一。科学家紀錄到，刚果峡谷在2020年發生過世界已知最长的沉积物崩塌。",
+	   "Description":"世界上最大的峡谷之一。科学家纪录到，刚果峡谷在2020年发生过世界已知最长的沉积物崩塌。",
 	   "Biodiversity":"N/A",
 	   "Changes_made":"Height edited; Depth edited; Length edited; Description edited"
 	},
