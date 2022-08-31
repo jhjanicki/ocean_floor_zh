@@ -57,8 +57,8 @@
     }
 
     .subtitle {
-      font-size: 16px;
       margin-bottom: 20px;
+      font-size: 14px;
     }
 
     #console {
@@ -172,7 +172,7 @@
     }
 
     #title {
-      font-family: 'Noto Sans CJK';
+      font-family: 'Eczar', serif;
       color: #0c1b34;
       font-weight: 700;
       margin-left: -10px;
@@ -280,7 +280,7 @@
     .instruction p {
       color: #4159A8;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 12px;
     }
 
     .button {
@@ -375,12 +375,12 @@
         font-size: 12px;
       }
 
-      #console {
+      /* #console {
         padding: 10px 20px;
-      }
+      } */
 
       #title {
-        margin-top: -10px;
+        margin-top: 0px;
       }
 
       .mapboxgl-popup {
@@ -388,17 +388,17 @@
       }
     }
 
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 550px) {
       body {
-        font-size: 11px !important;
+        font-size: 12px !important;
       }
 
       #title {
-        font-size: 13px;
+        font-size: 14px;
       }
 
       .subtitle {
-        font-size: 12px;
+        font-size: 13px;
       }
 
       .active {
@@ -440,7 +440,7 @@
 
       #logo {
         position: absolute;
-        bottom: 15px;
+        top: 15px;
         right: 0px;
       }
 
@@ -531,7 +531,6 @@
     var viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
     var mobile = false;
-    var iphone = false;
     var safari = false;
 
     let popup;
@@ -547,13 +546,13 @@
       }
     });
 
-    if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || viewportWidth < 600) {
+    if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || viewportWidth < 550) {
       mobile = true;
     }
 
-    if (/iPhone/i.test(navigator.userAgent)) {
-      iphone = true;
-    }
+    // if (/iPhone/i.test(navigator.userAgent)) {
+    //   iphone = true;
+    // }
 
     //if Safari
     const ua = navigator.userAgent.toLowerCase();
@@ -823,41 +822,84 @@
 
       function clickPointLayer(layer, className, heightBool, depthBool, biodiversityBool) {
 
-        map.on('click', layer, function (e) {
-          map.getCanvas().style.cursor = 'pointer';
-          const latitude = e.features[0].properties.latitude;
-          const longitude = e.features[0].properties.longitude;
-          const period_of_formation = e.features[0].properties.period_of_formation;
-          const name = e.features[0].properties.name;
-          const type = e.features[0].properties.type;
-          const length1 = e.features[0].properties.length1;
-          const height = heightBool ? e.features[0].properties.height : '';
-          const depth = depthBool ? e.features[0].properties.depth : '';
-          const biodiversity = biodiversityBool ? e.features[0].properties.biodiversity : '';
-          const description = e.features[0].properties.description;
-          let popupContent = '';
+        if (mobile) {
 
-          if (className === 'seamount') {
-            popupContent = `<h3 class="popupTitle">${name}</h3>
+          map.on('touchstart', layer, function (e) {
+            map.getCanvas().style.cursor = 'pointer';
+            const latitude = e.features[0].properties.latitude;
+            const longitude = e.features[0].properties.longitude;
+            const period_of_formation = e.features[0].properties.period_of_formation;
+            const name = e.features[0].properties.name;
+            const type = e.features[0].properties.type;
+            const length1 = e.features[0].properties.length1;
+            const height = heightBool ? e.features[0].properties.height : '';
+            const depth = depthBool ? e.features[0].properties.depth : '';
+            const biodiversity = biodiversityBool ? e.features[0].properties.biodiversity : '';
+            const description = e.features[0].properties.description;
+            let popupContent = '';
+
+            if (className === 'seamount') {
+              popupContent = `<h3 class="popupTitle">${name}</h3>
             ${length1 !== 'not known' && length1 !== '' && length1 !== 'N/A' && length1 !== 'undefined' ? "<h4><b> 长度: </b>" + length1 + "</h4>" : ""}
             ${height !== 'not known' && height !== '' && height !== 'N/A' && height !== 'undefined' ? "<h4><b> 高度: </b>" + height + "</h4>" : ""}
             ${period_of_formation !== 'not known' && period_of_formation !== '' && period_of_formation !== 'N/A' && period_of_formation !== 'undefined' ? "<h4><b> 形成时期: </b>" + period_of_formation + "</h4>" : ""}
             ${biodiversity !== 'not known' && biodiversity !== '' && biodiversity !== 'N/A' && biodiversity !== 'undefined' ? "<h4><b> 已发现的生物多样性: </b>" + biodiversity + "</h4>" : ""}
             ${description !== 'not known' && description !== '' && description !== 'N/A' && description !== 'undefined' ? "<h4><b> 描述: </b>" + description + "</h4>" : ""}`
-          } else {
-            popupContent = `<h3 class="popupTitle">${name}</h3>
+            } else {
+              popupContent = `<h3 class="popupTitle">${name}</h3>
             ${length1 !== 'not known' && length1 !== '' && length1 !== 'N/A' && length1 !== 'undefined' ? "<h4><b> 长度: </b>" + length1 + "</h4>" : ""}
             ${height !== 'not known' && height !== '' && height !== 'N/A' && height !== 'undefined' ? "<h4><b> 高度: </b>" + height + "</h4>" : ""}
             ${period_of_formation !== 'not known' && period_of_formation !== '' && period_of_formation !== 'N/A' && period_of_formation !== 'undefined' ? "<h4><b> 形成时期: </b>" + period_of_formation + "</h4>" : ""}
             ${description !== 'not known' && description !== '' && description !== 'N/A' && description !== 'undefined' ? "<h4><b> 描述: </b>" + description + "</h4>" : ""}`
-          }
+            }
 
-          popup = new mapboxgl.Popup({ closeButton: true, closeOnClick: true, className: className })
-            .setHTML(popupContent)
-            .setLngLat([e.lngLat.lng, e.lngLat.lat])
-            .addTo(map);
+            popup = new mapboxgl.Popup({ closeButton: true, closeOnClick: true, className: className })
+              .setHTML(popupContent)
+              .setLngLat([e.lngLat.lng, e.lngLat.lat])
+              .addTo(map);
 
-        });
+          });
+
+        } else {
+
+          map.on('click', layer, function (e) {
+            map.getCanvas().style.cursor = 'pointer';
+            const latitude = e.features[0].properties.latitude;
+            const longitude = e.features[0].properties.longitude;
+            const period_of_formation = e.features[0].properties.period_of_formation;
+            const name = e.features[0].properties.name;
+            const type = e.features[0].properties.type;
+            const length1 = e.features[0].properties.length1;
+            const height = heightBool ? e.features[0].properties.height : '';
+            const depth = depthBool ? e.features[0].properties.depth : '';
+            const biodiversity = biodiversityBool ? e.features[0].properties.biodiversity : '';
+            const description = e.features[0].properties.description;
+            let popupContent = '';
+
+            if (className === 'seamount') {
+              popupContent = `<h3 class="popupTitle">${name}</h3>
+            ${length1 !== 'not known' && length1 !== '' && length1 !== 'N/A' && length1 !== 'undefined' ? "<h4><b> 长度: </b>" + length1 + "</h4>" : ""}
+            ${height !== 'not known' && height !== '' && height !== 'N/A' && height !== 'undefined' ? "<h4><b> 高度: </b>" + height + "</h4>" : ""}
+            ${period_of_formation !== 'not known' && period_of_formation !== '' && period_of_formation !== 'N/A' && period_of_formation !== 'undefined' ? "<h4><b> 形成时期: </b>" + period_of_formation + "</h4>" : ""}
+            ${biodiversity !== 'not known' && biodiversity !== '' && biodiversity !== 'N/A' && biodiversity !== 'undefined' ? "<h4><b> 已发现的生物多样性: </b>" + biodiversity + "</h4>" : ""}
+            ${description !== 'not known' && description !== '' && description !== 'N/A' && description !== 'undefined' ? "<h4><b> 描述: </b>" + description + "</h4>" : ""}`
+            } else {
+              popupContent = `<h3 class="popupTitle">${name}</h3>
+            ${length1 !== 'not known' && length1 !== '' && length1 !== 'N/A' && length1 !== 'undefined' ? "<h4><b> 长度: </b>" + length1 + "</h4>" : ""}
+            ${height !== 'not known' && height !== '' && height !== 'N/A' && height !== 'undefined' ? "<h4><b> 高度: </b>" + height + "</h4>" : ""}
+            ${period_of_formation !== 'not known' && period_of_formation !== '' && period_of_formation !== 'N/A' && period_of_formation !== 'undefined' ? "<h4><b> 形成时期: </b>" + period_of_formation + "</h4>" : ""}
+            ${description !== 'not known' && description !== '' && description !== 'N/A' && description !== 'undefined' ? "<h4><b> 描述: </b>" + description + "</h4>" : ""}`
+            }
+
+            popup = new mapboxgl.Popup({ closeButton: true, closeOnClick: true, className: className })
+              .setHTML(popupContent)
+              .setLngLat([e.lngLat.lng, e.lngLat.lat])
+              .addTo(map);
+
+          });
+
+        }
+
 
       }
 
@@ -867,19 +909,20 @@
 
 
       function clickLineLayer(layer, className, heightBool, depthBool, biodiversityBool, period) {
-        map.on('click', layer, function (e) {
-          map.getCanvas().style.cursor = 'pointer';
-          const period_of_formation = period ? e.features[0].properties.period_of_formation : "";
-          const name = e.features[0].properties.name;
-          const length = e.features[0].properties.length1;
-          const height = heightBool ? e.features[0].properties.height : "";
-          const depth = depthBool ? e.features[0].properties.depth : "";
-          const description = e.features[0].properties.description;
-          const biodiversity = biodiversityBool ? e.features[0].properties.biodiversity : "";
+        if (mobile) {
+          map.on('touchstart', layer, function (e) {
+            map.getCanvas().style.cursor = 'pointer';
+            const period_of_formation = period ? e.features[0].properties.period_of_formation : "";
+            const name = e.features[0].properties.name;
+            const length = e.features[0].properties.length1;
+            const height = heightBool ? e.features[0].properties.height : "";
+            const depth = depthBool ? e.features[0].properties.depth : "";
+            const description = e.features[0].properties.description;
+            const biodiversity = biodiversityBool ? e.features[0].properties.biodiversity : "";
 
-          let popupContent = ''
+            let popupContent = ''
 
-          popupContent = `<h3 class="popupTitle">${name}</h3>
+            popupContent = `<h3 class="popupTitle">${name}</h3>
             ${length !== 'not known' && length !== '' && length !== 'N/A' && length !== 'undefined' ? "<h4><b> 长度: </b>" + length + "</h4>" : ""}
             ${height !== 'not known' && height !== '' && height !== 'N/A' && height !== 'undefined' ? "<h4><b> 高度: </b>" + height + "</h4>" : ""}
             ${depth !== 'not known' && depth !== '' && depth !== 'N/A' && depth !== 'undefined' ? "<h4><b> 深度: </b>" + depth + "</h4>" : ""}
@@ -888,11 +931,40 @@
             ${description !== 'not known' && description !== '' && description !== 'N/A' && description !== 'undefined' ? "<h4><b> 描述: </b>" + description + "</h4>" : ""}`
 
 
-          popup = new mapboxgl.Popup({ closeButton: true, closeOnClick: true, className: className })
-            .setHTML(popupContent)
-            .setLngLat([e.lngLat.lng, e.lngLat.lat])
-            .addTo(map);
-        });
+            popup = new mapboxgl.Popup({ closeButton: true, closeOnClick: true, className: className })
+              .setHTML(popupContent)
+              .setLngLat([e.lngLat.lng, e.lngLat.lat])
+              .addTo(map);
+          });
+
+        } else {
+          map.on('click', layer, function (e) {
+            map.getCanvas().style.cursor = 'pointer';
+            const period_of_formation = period ? e.features[0].properties.period_of_formation : "";
+            const name = e.features[0].properties.name;
+            const length = e.features[0].properties.length1;
+            const height = heightBool ? e.features[0].properties.height : "";
+            const depth = depthBool ? e.features[0].properties.depth : "";
+            const description = e.features[0].properties.description;
+            const biodiversity = biodiversityBool ? e.features[0].properties.biodiversity : "";
+
+            let popupContent = ''
+
+            popupContent = `<h3 class="popupTitle">${name}</h3>
+            ${length !== 'not known' && length !== '' && length !== 'N/A' && length !== 'undefined' ? "<h4><b> 长度: </b>" + length + "</h4>" : ""}
+            ${height !== 'not known' && height !== '' && height !== 'N/A' && height !== 'undefined' ? "<h4><b> 高度: </b>" + height + "</h4>" : ""}
+            ${depth !== 'not known' && depth !== '' && depth !== 'N/A' && depth !== 'undefined' ? "<h4><b> 深度: </b>" + depth + "</h4>" : ""}
+            ${period_of_formation !== 'not known' && period_of_formation !== '' && period_of_formation !== 'N/A' && period_of_formation !== 'undefined' ? "<h4><b> 形成时期: </b>" + period_of_formation + "</h4>" : ""}
+            ${biodiversity !== 'not known' && biodiversity !== '' && biodiversity !== 'N/A' && biodiversity !== 'undefined' ? "<h4><b> 已发现的生物多样性: </b>" + biodiversity + "</h4>" : ""}
+            ${description !== 'not known' && description !== '' && description !== 'N/A' && description !== 'undefined' ? "<h4><b> 描述: </b>" + description + "</h4>" : ""}`
+
+
+            popup = new mapboxgl.Popup({ closeButton: true, closeOnClick: true, className: className })
+              .setHTML(popupContent)
+              .setLngLat([e.lngLat.lng, e.lngLat.lat])
+              .addTo(map);
+          });
+        }
 
       }
 
