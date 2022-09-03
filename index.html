@@ -199,6 +199,8 @@
     .mapboxgl-popup-content {
       font-family: 'Work Sans', sans-serif;
       padding: 0;
+      max-height: 250px !important;
+      overflow-y: scroll;
     }
 
     .mapboxgl-popup-content-wrapper {
@@ -417,14 +419,14 @@
         font-size: 10px;
       }
 
-      .mapboxgl-popup {
+      /* .mapboxgl-popup {
         transform: none !important;
         top: 230px;
         left: 0;
         right: 0;
         margin-left: auto;
         margin-right: auto;
-      }
+      } */
 
       .mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
       .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
@@ -446,6 +448,10 @@
 
       #logo img {
         width: 100px;
+      }
+
+      .mapboxgl-popup-content {
+        max-height: 200px !important;
       }
 
       .mapboxgl-popup-content h4 {
@@ -539,12 +545,12 @@
     const featureSize = 7;
     const featureSizeMobile = 9;
 
-    $(window).resize(function () {
-      if (windowWidth != $(window).width() || windowHeight != $(window).height()) {
-        location.reload();
-        return;
-      }
-    });
+    // $(window).resize(function () {
+    //   if (windowWidth != $(window).width() || windowHeight != $(window).height()) {
+    //     location.reload();
+    //     return;
+    //   }
+    // });
 
     if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || viewportWidth < 550) {
       mobile = true;
@@ -633,6 +639,8 @@
       });
 
     }
+
+    map.addControl(new mapboxgl.FullscreenControl());
 
     let consoleHeight = $("#console").height() / 2;
     $("#toggleConsole").css("top", consoleHeight);
